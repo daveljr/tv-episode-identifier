@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Episode Identifier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .confidence-high {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .confidence-medium {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .confidence-low {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .folder-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .folder-info strong {
+            color: #667eea;
+        }
+
+        #refreshBtn {
+            margin-bottom: 20px;
+        }
+
+        .episode-row {
+            vertical-align: top;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 5px;
+        }
+
+        .image-container {
+            position: relative;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+
+        .image-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .match-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .match-badge.match {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .match-badge.no-match {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .editable-input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .editable-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .episode-number-input {
+            width: 60px;
+        }
+
+        .edit-cell {
+            min-width: 150px;
+        }
+
+        .details-cell {
+            min-width: 250px;
+        }
+
+        .toggle-images {
+            background: transparent;
+            color: #667eea;
+            text-decoration: underline;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .toggle-images:hover {
+            background: #f0f0f0;
+        }
+
+        .images-expanded {
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TV Episode Identifier</h1>
+        <p class="subtitle">Automatically identify and rename TV episodes from ripped discs</p>
+
+        <button id="refreshBtn" onclick="loadFolders()">Refresh Folders</button>
+
+        <div id="message"></div>
+        <div id="folderList"></div>
+        <div id="results" class="results-section"></div>
+    </div>
+
+    <script>
+        let currentFolder = null;
+        let identifiedEpisodes = null;
+
+        // Load folders on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFolders();
+        });
+
+        async function loadFolders() {
+            const folderList = document.getElementById('folderList');
+            folderList.innerHTML = '<div class="loading"><div class="spinner"></div>Loading folders...</div>';
+
+            try {
+                const response = await fetch('/api/folders');
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                if (data.folders.length === 0) {
+                    folderList.innerHTML = '<p>No folders found in /mnt/ripper</p>';
+                    return;
+                }
+
+                // Create table
+                let html = '<table><thead><tr><th>Folder Name</th><th>TV Show</th><th>Season</th><th>Disk</th><th>Files</th><th>Action</th></tr></thead><tbody>';
+
+                data.folders.forEach(folder => {
+                    html += `
+                        <tr>
+                            <td>${folder.name}</td>
+                            <td>${folder.show_name}</td>
+                            <td>${folder.season}</td>
+                            <td>${folder.disk}</td>
+                            <td>${folder.file_count}</td>
+                            <td><button onclick="identifyFolder('${folder.path}', '${folder.show_name}', ${folder.season})">Identify</button></td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                folderList.innerHTML = html;
+
+            } catch (error) {
+                showError('Failed to load folders: ' + error.message);
+            }
+        }
+
+        async function identifyFolder(folderPath, showName, season) {
+            currentFolder = { path: folderPath, showName: showName, season: season };
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="loading"><div class="spinner"></div>Identifying episodes... This may take a few minutes.</div>';
+
+            try {
+                const response = await fetch('/api/identify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        folder_path: folderPath,
+                        show_name: showName,
+                        season: season
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    results.innerHTML = '';
+                    return;
+                }
+
+                identifiedEpisodes = data.episodes;
+                displayResults(data);
+
+            } catch (error) {
+                showError('Failed to identify episodes: ' + error.message);
+                results.innerHTML = '';
+            }
+        }
+
+        function toggleImages(index) {
+            const imagesDiv = document.getElementById(`images-${index}`);
+            const button = document.getElementById(`toggle-btn-${index}`);
+
+            if (imagesDiv.style.display === 'none' || !imagesDiv.style.display) {
+                imagesDiv.style.display = 'block';
+                button.textContent = 'Hide Images';
+            } else {
+                imagesDiv.style.display = 'none';
+                button.textContent = 'Show Images';
+            }
+        }
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+
+            let html = `
+                <div class="folder-info">
+                    <strong>TV Show:</strong> ${data.show_name} | <strong>Season:</strong> ${data.season}
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Episode #</th>
+                            <th>Episode Name</th>
+                            <th>Original Filename</th>
+                            <th>Confidence</th>
+                            <th>Match</th>
+                            <th>Preview</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.episodes.forEach((ep, index) => {
+                const confidenceClass = ep.confidence >= 70 ? 'confidence-high' :
+                                       ep.confidence >= 40 ? 'confidence-medium' : 'confidence-low';
+
+                const matchBadge = ep.is_match ?
+                    '<span class="match-badge match">Match</span>' :
+                    '<span class="match-badge no-match">No Match</span>';
+
+                html += `
+                    <tr class="episode-row">
+                        <td class="edit-cell">
+                            <input type="number"
+                                   class="editable-input episode-number-input"
+                                   value="${ep.episode_number}"
+                                   onchange="updateEpisode(${index}, 'episode_number', this.value)" />
+                        </td>
+                        <td class="edit-cell">
+                            <input type="text"
+                                   class="editable-input"
+                                   value="${ep.episode_name}"
+                                   onchange="updateEpisode(${index}, 'episode_name', this.value)" />
+                        </td>
+                        <td>${ep.original_name}</td>
+                        <td class="${confidenceClass}">${ep.confidence}%</td>
+                        <td>${matchBadge}</td>
+                        <td>
+                            <button class="toggle-images" id="toggle-btn-${index}" onclick="toggleImages(${index})">Show Images</button>
+                            <div id="images-${index}" class="images-expanded" style="display: none;">
+                                <div class="image-preview">
+                                    ${ep.matched_frame ? `
+                                        <div class="image-container">
+                                            <div class="image-label">Video Frame</div>
+                                            <img src="data:image/jpeg;base64,${ep.matched_frame}" alt="Video Frame" />
+                                        </div>
+                                    ` : '<div>No frame available</div>'}
+                                    ${ep.matched_still ? `
+                                        <div class="image-container">
+                                            <div class="image-label">Episode Still (TMDB)</div>
+                                            <img src="data:image/jpeg;base64,${ep.matched_still}" alt="Episode Still" />
+                                        </div>
+                                    ` : '<div>No still available</div>'}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+                <div class="action-buttons">
+                    <button onclick="renameFiles()">Rename</button>
+                    <button onclick="moveFiles()">Move</button>
+                </div>
+            `;
+
+            results.innerHTML = html;
+        }
+
+        function updateEpisode(index, field, value) {
+            if (identifiedEpisodes && identifiedEpisodes[index]) {
+                if (field === 'episode_number') {
+                    identifiedEpisodes[index][field] = parseInt(value);
+                } else {
+                    identifiedEpisodes[index][field] = value;
+                }
+            }
+        }
+
+        async function renameFiles() {
+            if (!currentFolder || !identifiedEpisodes) {
+                showError('No episodes identified');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to rename these files?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/rename', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        folder_path: currentFolder.path,
+                        episodes: identifiedEpisodes
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess('Files renamed successfully!');
+                loadFolders();
+                document.getElementById('results').innerHTML = '';
+
+            } catch (error) {
+                showError('Failed to rename files: ' + error.message);
+            }
+        }
+
+        async function moveFiles() {
+            if (!currentFolder || !identifiedEpisodes) {
+                showError('No episodes identified');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to move these files to /mnt/shows?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/move', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        folder_path: currentFolder.path,
+                        episodes: identifiedEpisodes,
+                        show_name: currentFolder.showName,
+                        season: currentFolder.season
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess('Files moved successfully!');
+                loadFolders();
+                document.getElementById('results').innerHTML = '';
+
+            } catch (error) {
+                showError('Failed to move files: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="error">${message}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 5000);
+        }
+
+        function showSuccess(message) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="success">${message}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 5000);
+        }
+    </script>
+</body>
+</html>

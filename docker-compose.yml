@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  tv-identifier:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Replace with your actual paths
+      - ./test-data/ripper:/mnt/ripper
+      - ./test-data/shows:/mnt/shows
+    environment:
+      # Get your API key from https://www.themoviedb.org/settings/api
+      - TMDB_API_KEY=${TMDB_API_KEY:-your_api_key_here}
+      - RIPPER_PATH=/mnt/ripper
+      - SHOWS_PATH=/mnt/shows
+    restart: unless-stopped
