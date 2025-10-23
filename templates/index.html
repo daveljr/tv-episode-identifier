@@ -154,10 +154,6 @@
             color: #667eea;
         }
 
-        #refreshBtn {
-            margin-bottom: 20px;
-        }
-
         .episode-row {
             vertical-align: top;
         }
@@ -176,8 +172,8 @@
         }
 
         .image-container img {
-            width: 100%;
-            height: auto;
+            width: auto;
+            height: 150px;
             border-radius: 5px;
             border: 2px solid #ddd;
         }
@@ -253,6 +249,230 @@
             border-radius: 5px;
             margin-top: 5px;
         }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .log-viewer {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            overflow-y: auto;
+            flex-grow: 1;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .log-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .log-controls label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .log-controls select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .log-info {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        /* Episode Images Preview Modal */
+        .preview-modal-content {
+            max-height: 85vh;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .preview-video-frame {
+            width: 200px;
+            border: 3px solid #667eea;
+            border-radius: 5px;
+        }
+
+        .preview-video-info {
+            flex: 1;
+        }
+
+        .preview-video-info h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+
+        .preview-video-info p {
+            margin: 3px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .episodes-grid {
+            overflow-y: auto;
+            max-height: calc(85vh - 200px);
+            padding-right: 10px;
+        }
+
+        .episode-card {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .episode-card.high-match {
+            border-color: #2ecc71;
+            background: #f0fff4;
+        }
+
+        .episode-card.medium-match {
+            border-color: #f39c12;
+            background: #fffbf0;
+        }
+
+        .episode-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .episode-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .episode-score {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .episode-score.high {
+            color: #2ecc71;
+            border: 2px solid #2ecc71;
+        }
+
+        .episode-score.medium {
+            color: #f39c12;
+            border: 2px solid #f39c12;
+        }
+
+        .episode-score.low {
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+
+        .episode-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .episode-image-wrapper {
+            position: relative;
+        }
+
+        .episode-image-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+
+        .image-count-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -260,16 +480,58 @@
         <h1>TV Episode Identifier</h1>
         <p class="subtitle">Automatically identify and rename TV episodes from ripped discs</p>
 
-        <button id="refreshBtn" onclick="loadFolders()">Refresh Folders</button>
+        <div class="header-buttons">
+            <button id="refreshBtn" onclick="loadFolders()">Refresh Folders</button>
+            <button onclick="openLogViewer()">View Logs</button>
+        </div>
 
         <div id="message"></div>
         <div id="folderList"></div>
         <div id="results" class="results-section"></div>
     </div>
 
+    <!-- Log Viewer Modal -->
+    <div id="logModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Application Logs</h2>
+                <span class="close" onclick="closeLogViewer()">&times;</span>
+            </div>
+            <div class="log-controls">
+                <label for="logLines">Show last:</label>
+                <select id="logLines" onchange="loadLogs()">
+                    <option value="100">100 lines</option>
+                    <option value="250">250 lines</option>
+                    <option value="500" selected>500 lines</option>
+                    <option value="1000">1000 lines</option>
+                    <option value="2500">2500 lines</option>
+                    <option value="5000">5000 lines</option>
+                </select>
+                <button onclick="loadLogs()">Refresh</button>
+                <button onclick="copyLogsToClipboard()">Copy to Clipboard</button>
+            </div>
+            <div id="logInfo" class="log-info"></div>
+            <div id="logContent" class="log-viewer">Loading logs...</div>
+        </div>
+    </div>
+
+    <!-- Episode Images Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content preview-modal-content">
+            <div class="modal-header">
+                <h2>All TheMovieDB Images - Match Preview</h2>
+                <span class="close" onclick="closePreviewModal()">&times;</span>
+            </div>
+            <div id="previewContent">
+                <div class="loading"><div class="spinner"></div>Loading episode images...</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentFolder = null;
         let identifiedEpisodes = null;
+        let currentSessionId = null;
 
         // Load folders on page load
         document.addEventListener('DOMContentLoaded', () => {
@@ -290,7 +552,7 @@
                 }
 
                 if (data.folders.length === 0) {
-                    folderList.innerHTML = '<p>No folders found in /mnt/ripper</p>';
+                    folderList.innerHTML = '<p>No folders found in /app/input</p>';
                     return;
                 }
 
@@ -343,24 +605,12 @@
                 }
 
                 identifiedEpisodes = data.episodes;
+                currentSessionId = data.session_id;
                 displayResults(data);
 
             } catch (error) {
                 showError('Failed to identify episodes: ' + error.message);
                 results.innerHTML = '';
-            }
-        }
-
-        function toggleImages(index) {
-            const imagesDiv = document.getElementById(`images-${index}`);
-            const button = document.getElementById(`toggle-btn-${index}`);
-
-            if (imagesDiv.style.display === 'none' || !imagesDiv.style.display) {
-                imagesDiv.style.display = 'block';
-                button.textContent = 'Hide Images';
-            } else {
-                imagesDiv.style.display = 'none';
-                button.textContent = 'Show Images';
             }
         }
 
@@ -386,8 +636,8 @@
             `;
 
             data.episodes.forEach((ep, index) => {
-                const confidenceClass = ep.confidence >= 70 ? 'confidence-high' :
-                                       ep.confidence >= 40 ? 'confidence-medium' : 'confidence-low';
+                const confidenceClass = ep.confidence >= 80 ? 'confidence-high' :
+                                       ep.confidence >= 60 ? 'confidence-medium' : 'confidence-low';
 
                 const matchBadge = ep.is_match ?
                     '<span class="match-badge match">Match</span>' :
@@ -411,23 +661,7 @@
                         <td class="${confidenceClass}">${ep.confidence}%</td>
                         <td>${matchBadge}</td>
                         <td>
-                            <button class="toggle-images" id="toggle-btn-${index}" onclick="toggleImages(${index})">Show Images</button>
-                            <div id="images-${index}" class="images-expanded" style="display: none;">
-                                <div class="image-preview">
-                                    ${ep.matched_frame ? `
-                                        <div class="image-container">
-                                            <div class="image-label">Video Frame</div>
-                                            <img src="data:image/jpeg;base64,${ep.matched_frame}" alt="Video Frame" />
-                                        </div>
-                                    ` : '<div>No frame available</div>'}
-                                    ${ep.matched_still ? `
-                                        <div class="image-container">
-                                            <div class="image-label">Episode Still (TMDB)</div>
-                                            <img src="data:image/jpeg;base64,${ep.matched_still}" alt="Episode Still" />
-                                        </div>
-                                    ` : '<div>No still available</div>'}
-                                </div>
-                            </div>
+                            <button onclick="openPreviewModal('${ep.original_name}')">Preview All Matches</button>
                         </td>
                     </tr>
                 `;
@@ -483,8 +717,26 @@
                 }
 
                 showSuccess('Files renamed successfully!');
+
+                // Update the identifiedEpisodes with new names from the rename response
+                if (data.results) {
+                    data.results.forEach((result, index) => {
+                        if (identifiedEpisodes[index]) {
+                            identifiedEpisodes[index].original_name = result.new_name;
+                        }
+                    });
+                }
+
+                // Redisplay the results with updated names
+                displayResults(identifiedEpisodes, currentFolder.show_name, currentFolder.season);
+
+                // Refresh folder list
                 loadFolders();
-                document.getElementById('results').innerHTML = '';
+
+                // Ask if user wants to move files
+                if (confirm('Files renamed successfully! Would you like to move the files to the shows directory now?')) {
+                    moveFiles();
+                }
 
             } catch (error) {
                 showError('Failed to rename files: ' + error.message);
@@ -497,7 +749,7 @@
                 return;
             }
 
-            if (!confirm('Are you sure you want to move these files to /mnt/shows?')) {
+            if (!confirm('Are you sure you want to move these files to /app/output?')) {
                 return;
             }
 
@@ -539,6 +791,165 @@
             const messageDiv = document.getElementById('message');
             messageDiv.innerHTML = `<div class="success">${message}</div>`;
             setTimeout(() => messageDiv.innerHTML = '', 5000);
+        }
+
+        // Preview Modal Functions
+        async function openPreviewModal(videoFile) {
+            if (!currentSessionId) {
+                showError('No session data available');
+                return;
+            }
+
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+
+            modal.style.display = 'block';
+            content.innerHTML = '<div class="loading"><div class="spinner"></div>Loading episode images...</div>';
+
+            try {
+                const url = `/api/episode-images?session_id=${encodeURIComponent(currentSessionId)}&video_file=${encodeURIComponent(videoFile)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.error) {
+                    content.innerHTML = `<div class="error">${data.error}</div>`;
+                    return;
+                }
+
+                renderPreviewContent(data);
+
+            } catch (error) {
+                content.innerHTML = `<div class="error">Failed to load episode images: ${error.message}</div>`;
+            }
+        }
+
+        function renderPreviewContent(data) {
+            const content = document.getElementById('previewContent');
+
+            let html = `
+                <div class="preview-header">
+                    ${data.matched_frame ? `
+                        <img src="data:image/jpeg;base64,${data.matched_frame}"
+                             alt="Video Frame"
+                             class="preview-video-frame" />
+                    ` : ''}
+                    <div class="preview-video-info">
+                        <h3>Video: ${data.video_file}</h3>
+                        <p>Comparing this video frame against all TheMovieDB episode images</p>
+                        <p><strong>Note:</strong> Matches 80%+ are weighted more heavily in the confidence calculation</p>
+                    </div>
+                </div>
+                <div class="episodes-grid">
+            `;
+
+            // Sort episodes by score (descending)
+            const sortedEpisodes = [...data.episodes].sort((a, b) => b.score - a.score);
+
+            sortedEpisodes.forEach(episode => {
+                const scoreClass = episode.score >= 80 ? 'high' :
+                                  episode.score >= 60 ? 'medium' : 'low';
+                const cardClass = episode.score >= 80 ? 'high-match' :
+                                 episode.score >= 60 ? 'medium-match' : '';
+
+                html += `
+                    <div class="episode-card ${cardClass}">
+                        <div class="episode-card-header">
+                            <div class="episode-card-title">
+                                Episode ${episode.episode_number}: ${episode.episode_name}
+                            </div>
+                            <div class="episode-score ${scoreClass}">
+                                ${episode.score}%
+                            </div>
+                        </div>
+                        <div class="episode-images">
+                `;
+
+                episode.images.forEach((image, idx) => {
+                    html += `
+                        <div class="episode-image-wrapper">
+                            <img src="data:image/jpeg;base64,${image}"
+                                 alt="Episode ${episode.episode_number} - Image ${idx + 1}" />
+                            ${episode.images.length > 1 ? `
+                                <span class="image-count-badge">${idx + 1}/${episode.images.length}</span>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        // Log Viewer Functions
+        function openLogViewer() {
+            document.getElementById('logModal').style.display = 'block';
+            loadLogs();
+        }
+
+        function closeLogViewer() {
+            document.getElementById('logModal').style.display = 'none';
+        }
+
+        async function loadLogs() {
+            const logContent = document.getElementById('logContent');
+            const logInfo = document.getElementById('logInfo');
+            const lines = document.getElementById('logLines').value;
+
+            logContent.textContent = 'Loading logs...';
+            logInfo.textContent = '';
+
+            try {
+                const response = await fetch(`/api/logs?lines=${lines}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    logContent.textContent = 'Error loading logs: ' + data.error;
+                    return;
+                }
+
+                logContent.textContent = data.logs || 'No logs available';
+                logInfo.textContent = `Showing ${data.returned_lines} of ${data.total_lines} total log lines`;
+
+                // Auto-scroll to bottom
+                logContent.scrollTop = logContent.scrollHeight;
+
+            } catch (error) {
+                logContent.textContent = 'Failed to load logs: ' + error.message;
+            }
+        }
+
+        async function copyLogsToClipboard() {
+            const logContent = document.getElementById('logContent').textContent;
+
+            try {
+                await navigator.clipboard.writeText(logContent);
+                showSuccess('Logs copied to clipboard!');
+            } catch (error) {
+                showError('Failed to copy logs: ' + error.message);
+            }
+        }
+
+        // Close modals when clicking outside of them
+        window.onclick = function(event) {
+            const logModal = document.getElementById('logModal');
+            const previewModal = document.getElementById('previewModal');
+
+            if (event.target == logModal) {
+                closeLogViewer();
+            }
+            if (event.target == previewModal) {
+                closePreviewModal();
+            }
         }
     </script>
 </body>

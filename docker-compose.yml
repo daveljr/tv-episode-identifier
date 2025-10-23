@@ -7,11 +7,31 @@ services:
       - "5000:5000"
     volumes:
       # Replace with your actual paths
-      - ./test-data/ripper:/mnt/ripper
-      - ./test-data/shows:/mnt/shows
+      - ./test-data/input:/app/input
+      - ./test-data/output:/app/output
+      - ./logs:/app/logs
+      - ./temp:/app/temp  # Temporary storage for extracted frames and cached TMDB data
     environment:
       # Get your API key from https://www.themoviedb.org/settings/api
       - TMDB_API_KEY=${TMDB_API_KEY:-your_api_key_here}
-      - RIPPER_PATH=/mnt/ripper
-      - SHOWS_PATH=/mnt/shows
+      - INPUT_PATH=/app/input
+      - OUTPUT_PATH=/app/output
+      # Frame extraction configuration
+      - FRAME_HEIGHT=${FRAME_HEIGHT:-480}  # Height in pixels (width auto-calculated to preserve aspect ratio)
+      - FRAME_START_OFFSET=${FRAME_START_OFFSET:-0.0}  # Extract frames from 5% into video
+      - FRAME_END_OFFSET=${FRAME_END_OFFSET:-1.0}  # Extract frames up to 95% of video
+      # Logging configuration
+      - LOG_PATH=/app/logs
+    # GPU support for NVIDIA GPUs (enabled by default)
+    # This enables:
+    #   - GPU-accelerated image matching with PyTorch/CUDA (2-8x faster)
+    #   - Hardware-accelerated frame extraction with FFmpeg (cuda, qsv, vaapi, etc.)
+    # Uses ALL available GPUs - automatically falls back to CPU if no GPU found
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     restart: unless-stopped

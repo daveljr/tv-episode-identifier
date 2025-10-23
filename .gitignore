@@ -23,5 +23,10 @@ dist/
 # Test data
 test-data/
 
-# Logs
+# App Stuff
 *.log
+temp/
+input/
+output/
+logs/
+.claude/
