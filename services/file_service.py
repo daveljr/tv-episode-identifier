@@ -70,7 +70,9 @@ class FileService:
         """
         Move files to the shows directory (using their current names)
         Destination: /app/output/{TV Show Name}/Season {Season # padded to 2}/
-        Files that are still named "title_*" are moved to an extras folder instead
+        Files marked as extras are moved to an extras folder and renamed with
+        sequential numbering: "{sequential #} - {episode name}.{extension}"
+        After moving all files, deletes the source folder if it is empty
         """
         results = []
 
@@ -78,6 +80,9 @@ class FileService:
         season_dir = os.path.join(shows_base_path, show_name, f"Season {season:02d}")
         extras_dir = os.path.join(season_dir, "extras")
         os.makedirs(season_dir, exist_ok=True)
+
+        # Counter for extras files
+        extras_counter = 1
 
         for episode in episodes:
             original_path = os.path.join(folder_path, episode['original_name'])
@@ -93,11 +98,17 @@ class FileService:
             # Use the current filename from the episode data
             current_filename = Path(original_path).name
 
-            # Check if file is still named "title_*" (unrenamed)
-            if re.match(r'^title_\d+', current_filename, re.IGNORECASE):
-                # Move to extras folder
+            # Check if this is marked as an extra
+            is_extra = episode.get('is_extra', False)
+
+            if is_extra:
+                # Move to extras folder with sequential naming
                 os.makedirs(extras_dir, exist_ok=True)
-                new_path = os.path.join(extras_dir, current_filename)
+                ext = Path(original_path).suffix
+                episode_name = episode.get('episode_name', Path(original_path).stem)
+                new_filename = f"{extras_counter} - {episode_name}{ext}"
+                new_path = os.path.join(extras_dir, new_filename)
+                extras_counter += 1
             else:
                 # Move to season folder
                 new_path = os.path.join(season_dir, current_filename)
@@ -117,5 +128,16 @@ class FileService:
                     'success': False,
                     'error': str(e)
                 })
+
+        # Check if the source folder is empty and delete it if so
+        try:
+            if os.path.exists(folder_path) and os.path.isdir(folder_path):
+                # Check if the folder is empty (no files or subdirectories)
+                if not os.listdir(folder_path):
+                    os.rmdir(folder_path)
+        except Exception as e:
+            # Log the error but don't fail the entire operation
+            # The move operation was successful even if cleanup failed
+            pass
 
         return results

@@ -6,6 +6,7 @@ from pathlib import Path
 from PIL import Image
 from io import BytesIO
 import logging
+import threading
 
 logger = logging.getLogger(__name__)
 
@@ -15,18 +16,38 @@ class TMDBService:
     Service for interacting with TheMovieDB API
     - Caches all downloaded data to filesystem
     - Reduces API calls and speeds up re-identification
+    - Uses locks to prevent duplicate concurrent requests for the same data
     """
 
     BASE_URL = 'https://api.themoviedb.org/3'
     IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/original'
     CACHE_MAX_AGE_DAYS = 7  # Cache data for 7 days
 
-    def __init__(self, api_key, cache_dir='/app/temp/downloads'):
+    def __init__(self, api_key, cache_dir='/app/temp/downloads', frame_height=480):
         self.api_key = api_key
         self.session = requests.Session()
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"TMDBService initialized with cache: {self.cache_dir}")
+        self.frame_height = frame_height  # Store frame height for resizing images
+
+        # Dictionary to track locks for each show/season combination
+        self._request_locks = {}
+        # Master lock to protect the locks dictionary itself
+        self._locks_lock = threading.Lock()
+
+        logger.info(f"TMDBService initialized with cache: {self.cache_dir}, frame_height: {self.frame_height}")
+
+    def _get_lock_for_request(self, show_id, season_number):
+        """
+        Get or create a lock for a specific show/season request.
+        This ensures only one thread downloads data for a given show/season at a time.
+        """
+        lock_key = f"{show_id}_{season_number}"
+
+        with self._locks_lock:
+            if lock_key not in self._request_locks:
+                self._request_locks[lock_key] = threading.Lock()
+            return self._request_locks[lock_key]
 
     def search_tv_show(self, show_name):
         """Search for a TV show by name"""
@@ -55,8 +76,11 @@ class TMDBService:
 
     def get_season_data_cached(self, show_id, season_number):
         """
-        Get season data with filesystem caching
-        Returns episode metadata and image paths from cache or downloads fresh
+        Get season data with filesystem caching and request deduplication.
+        Returns episode metadata and image paths from cache or downloads fresh.
+
+        If multiple threads request the same data simultaneously, only one will
+        download while others wait and use the cached result.
 
         Args:
             show_id: TMDB show ID
@@ -67,27 +91,38 @@ class TMDBService:
         """
         cache_path = self._get_cache_path(show_id, season_number)
 
-        # Check if cache exists and is valid
+        # Quick check without lock - if cache is valid, return immediately
         if self._is_cache_valid(cache_path):
             logger.info(f"✓ Loading season data from cache: {cache_path.name}")
             return self._load_from_cache(cache_path)
 
-        # Cache miss or expired - download fresh data
-        logger.info(f"Cache miss or expired - downloading season {season_number} data from TMDB")
+        # Get the lock for this specific show/season combination
+        request_lock = self._get_lock_for_request(show_id, season_number)
 
-        # Get episode metadata
-        episodes = self.get_season_episodes(show_id, season_number)
-        if not episodes:
-            return None, None
+        # Acquire the lock - only one thread will download at a time
+        with request_lock:
+            # Double-check cache validity after acquiring lock
+            # Another thread may have downloaded the data while we were waiting
+            if self._is_cache_valid(cache_path):
+                logger.info(f"✓ Loading season data from cache (downloaded by another thread): {cache_path.name}")
+                return self._load_from_cache(cache_path)
 
-        # Download and cache episode images
-        episode_images = self._download_and_cache_images(episodes, show_id, season_number, cache_path)
+            # Cache miss or expired - download fresh data
+            logger.info(f"Cache miss or expired - downloading season {season_number} data from TMDB")
 
-        # Save metadata to cache
-        self._save_metadata_to_cache(cache_path, episodes, episode_images)
+            # Get episode metadata
+            episodes = self.get_season_episodes(show_id, season_number)
+            if not episodes:
+                return None, None
 
-        logger.info(f"✓ Cached season data to: {cache_path.name}")
-        return episodes, episode_images
+            # Download and cache episode images
+            episode_images = self._download_and_cache_images(episodes, show_id, season_number, cache_path)
+
+            # Save metadata to cache
+            self._save_metadata_to_cache(cache_path, episodes, episode_images)
+
+            logger.info(f"✓ Cached season data to: {cache_path.name}")
+            return episodes, episode_images
 
     def get_season_episodes(self, show_id, season_number):
         """Get episode information for a specific season (from API)"""
@@ -188,6 +223,7 @@ class TMDBService:
     def _download_image(self, tmdb_path, local_path):
         """
         Download a single image from TMDB and save to local path
+        Resizes image to match frame_height while maintaining aspect ratio
 
         Args:
             tmdb_path: TMDB image path (e.g., /abc123.jpg)
@@ -201,11 +237,26 @@ class TMDBService:
             response = self.session.get(image_url, timeout=30)
             response.raise_for_status()
 
-            # Save image to disk
+            # Load image from response
             image = Image.open(BytesIO(response.content))
+
+            # Resize to match frame height while maintaining aspect ratio
+            # This ensures TMDB images match the scale of extracted video frames
+            original_width, original_height = image.size
+            if original_height != self.frame_height:
+                # Calculate new width maintaining aspect ratio
+                aspect_ratio = original_width / original_height
+                new_width = int(self.frame_height * aspect_ratio)
+                new_size = (new_width, self.frame_height)
+
+                # Use LANCZOS for high-quality downsampling
+                image = image.resize(new_size, Image.Resampling.LANCZOS)
+                logger.debug(f"Resized image from {original_width}x{original_height} to {new_width}x{self.frame_height}")
+
+            # Save resized image to disk
             image.save(local_path, 'JPEG', quality=95)
 
-            logger.debug(f"Downloaded: {local_path.name}")
+            logger.debug(f"Downloaded and saved: {local_path.name}")
             return True
 
         except Exception as e:

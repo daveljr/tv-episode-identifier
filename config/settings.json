@@ -1,0 +1,9 @@
+{
+  "tmdb_api_key": "",
+  "frame_height": 480,
+  "frame_start_offset": 0.0,
+  "frame_end_offset": 1.0,
+  "auto_processing_enabled": false,
+  "auto_processing_delay": 30,
+  "frame_fps": 1
+}

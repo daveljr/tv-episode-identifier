@@ -186,14 +186,12 @@
         }
 
         .match-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
             padding: 3px 8px;
             border-radius: 3px;
             font-size: 10px;
             font-weight: bold;
             text-transform: uppercase;
+            display: inline-block;
         }
 
         .match-badge.match {
@@ -204,6 +202,16 @@
         .match-badge.no-match {
             background: #e74c3c;
             color: white;
+        }
+
+        /* Dimmed row style for files not being kept */
+        .row-dimmed {
+            opacity: 0.5;
+            background-color: #f9f9f9;
+        }
+
+        .row-dimmed:hover {
+            background-color: #f5f5f5;
         }
 
         .editable-input {
@@ -447,6 +455,7 @@
         .episode-images {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-rows: repeat(auto-fill, minmax(125px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -473,6 +482,210 @@
             font-size: 11px;
             font-weight: 600;
         }
+
+        .image-match-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .image-match-badge.high {
+            background: #2ecc71;
+        }
+
+        .image-match-badge.medium {
+            background: #f39c12;
+        }
+
+        .image-match-badge.low {
+            background: #e74c3c;
+        }
+
+        /* Image Comparison Slider Styles */
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 5px;
+            border: 2px solid #667eea;
+            cursor: ew-resize;
+            user-select: none;
+        }
+
+        .comparison-slider img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+            object-fit: cover;
+        }
+
+        .comparison-before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .comparison-before img {
+            object-position: left center;
+        }
+
+        .comparison-after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .comparison-after img {
+            position: absolute;
+            right: 0;
+            object-position: right center;
+        }
+
+        .comparison-handle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+            cursor: ew-resize;
+            z-index: 10;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        .comparison-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .comparison-handle::after {
+            content: '⇄';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8px;
+            color: #667eea;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .comparison-label {
+            position: absolute;
+            top: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            z-index: 5;
+        }
+
+        .comparison-label.left {
+            left: 5px;
+        }
+
+        .comparison-label.right {
+            right: 5px;
+        }
+
+        /* System Info Styles */
+        .sys-info-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .sys-info-section h3 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .sys-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .sys-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .sys-info-item strong {
+            color: #333;
+        }
+
+        .sys-info-item span {
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-badge.enabled {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .status-badge.disabled {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .status-badge.warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .gpu-device {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .gpu-device strong {
+            color: #667eea;
+        }
     </style>
 </head>
 <body>
@@ -483,7 +696,22 @@
         <div class="header-buttons">
             <button id="refreshBtn" onclick="loadFolders()">Refresh Folders</button>
             <button onclick="openLogViewer()">View Logs</button>
+            <button onclick="openSettings()" style="background: #9b59b6;">⚙ Settings</button>
+            <div style="display: inline-block; margin-left: 15px;">
+                <label for="refreshInterval" style="margin-right: 5px; font-size: 14px;">Auto-refresh:</label>
+                <select id="refreshInterval" onchange="updateRefreshInterval()" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                    <option value="5">5 seconds</option>
+                    <option value="10">10 seconds</option>
+                    <option value="30">30 seconds</option>
+                    <option value="60" selected>60 seconds</option>
+                    <option value="120">2 minutes</option>
+                    <option value="300">5 minutes</option>
+                    <option value="0">Disabled</option>
+                </select>
+            </div>
         </div>
+
+        <div id="systemInfo" style="margin: 20px 0;"></div>
 
         <div id="message"></div>
         <div id="folderList"></div>
@@ -509,9 +737,51 @@
                 </select>
                 <button onclick="loadLogs()">Refresh</button>
                 <button onclick="copyLogsToClipboard()">Copy to Clipboard</button>
+                <button onclick="clearLogs()" style="background: #e74c3c;">Clear Logs</button>
             </div>
             <div id="logInfo" class="log-info"></div>
             <div id="logContent" class="log-viewer">Loading logs...</div>
+        </div>
+    </div>
+
+    <!-- Identify Folder Modal -->
+    <div id="identifyModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Identify Folder</h2>
+                <span class="close" onclick="closeIdentifyModal()">&times;</span>
+            </div>
+            <div style="padding: 20px;">
+                <p style="margin-bottom: 20px; color: #666;">
+                    Enter the TV show details to rename this folder to the correct pattern.
+                </p>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Folder Name:</label>
+                    <div id="identifyFolderName" style="padding: 10px; background: #f5f5f5; border-radius: 4px; font-family: monospace;"></div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="identifyShowName" style="display: block; margin-bottom: 5px; font-weight: bold;">TV Show Name:</label>
+                    <input type="text" id="identifyShowName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" placeholder="e.g., Breaking Bad" />
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label for="identifySeason" style="display: block; margin-bottom: 5px; font-weight: bold;">Season #:</label>
+                        <input type="number" id="identifySeason" min="1" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" placeholder="e.g., 1" />
+                    </div>
+                    <div>
+                        <label for="identifyDisk" style="display: block; margin-bottom: 5px; font-weight: bold;">Disk #:</label>
+                        <input type="number" id="identifyDisk" min="1" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" placeholder="e.g., 1" />
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px;">
+                    <strong style="display: block; margin-bottom: 5px;">New folder name will be:</strong>
+                    <div id="identifyPreview" style="font-family: monospace; font-size: 14px; color: #1976d2;">-</div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button onclick="closeIdentifyModal()" style="background: #999;">Cancel</button>
+                    <button onclick="saveIdentifyFolder()" style="background: #2ecc71;">Save</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -528,14 +798,144 @@
         </div>
     </div>
 
-    <script>
-        let currentFolder = null;
-        let identifiedEpisodes = null;
-        let currentSessionId = null;
+    <!-- Video Player Modal -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content" style="max-width: 1200px;">
+            <div class="modal-header">
+                <h2 id="videoTitle">Video Player</h2>
+                <span class="close" onclick="closeVideoPlayer()">&times;</span>
+            </div>
+            <div style="background: #000; border-radius: 5px; overflow: hidden;">
+                <video id="videoPlayer" controls style="width: 100%; height: auto; max-height: 70vh;" preload="metadata">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
 
-        // Load folders on page load
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2>⚙ Application Settings</h2>
+                <span class="close" onclick="closeSettings()">&times;</span>
+            </div>
+            <div style="padding: 20px;">
+                <div id="settingsForm">
+                    <h3 style="margin-top: 0; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">TheMovieDB Configuration</h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">TMDB API Key:</label>
+                        <input type="text" id="setting_tmdb_api_key" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; font-family: monospace;" placeholder="Enter your TMDB API key" />
+                        <small style="color: #666;">Get your API key from <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a></small>
+                    </div>
+
+                    <h3 style="margin-top: 30px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Frame Extraction Settings</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Frame Height (pixels):</label>
+                        <input type="number" id="setting_frame_height" min="240" max="1080" step="1" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Higher values = better accuracy but slower processing (recommended: 480)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Frame Extraction Rate (FPS):</label>
+                        <input type="number" id="setting_frame_fps" min="0" max="60" step="0.5" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" placeholder="0 = all frames" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Frames per second to extract (0 or empty = all frames, 1-2 recommended for 92-98% reduction)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Frame Start Offset (0.0 - 1.0):</label>
+                        <input type="number" id="setting_frame_start_offset" min="0" max="1" step="0.1" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Extract frames starting from this point (0.0 = beginning)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Frame End Offset (0.0 - 1.0):</label>
+                        <input type="number" id="setting_frame_end_offset" min="0" max="1" step="0.1" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Extract frames ending at this point (1.0 = end)</small>
+                    </div>
+
+                    <h3 style="margin-top: 30px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Frame Extraction Performance</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="setting_extraction_parallel_enabled" style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;" />
+                            <span style="font-weight: bold;">Enable Parallel Extraction</span>
+                        </label>
+                        <small style="color: #666; display: block; margin-top: 5px; margin-left: 30px;">Extract frames using multiple FFmpeg processes simultaneously for 2-4x speedup (recommended with GPU)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Parallel Workers:</label>
+                        <input type="number" id="setting_extraction_parallel_workers" min="1" max="8" step="1" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Number of parallel FFmpeg processes (recommended: 4)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Output Format:</label>
+                        <select id="setting_extraction_output_format" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                            <option value="jpg">JPEG (smaller files, slower encoding)</option>
+                            <option value="png">PNG (larger files, faster encoding)</option>
+                        </select>
+                        <small style="color: #666; display: block; margin-top: 5px;">PNG is faster for extraction but creates larger temporary files</small>
+                    </div>
+
+                    <h3 style="margin-top: 30px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Image Matching Performance</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Max Candidate Frames:</label>
+                        <input type="number" id="setting_matcher_max_candidates" min="100" max="20000" step="100" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Maximum frames to compare per episode still. Higher = more thorough but slower (GPU: 5000+, CPU: 200-500)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">GPU Batch Size:</label>
+                        <input type="number" id="setting_matcher_gpu_batch_size" min="50" max="2000" step="50" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Frames processed per GPU batch. Larger = better GPU utilization but more memory (recommended: 500-1000)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">CPU Batch Size:</label>
+                        <input type="number" id="setting_matcher_cpu_batch_size" min="10" max="200" step="10" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Frames processed per CPU batch (recommended: 50)</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Early Stop Threshold (0.0 - 1.0):</label>
+                        <input type="number" id="setting_matcher_early_stop_threshold" min="0.5" max="1.0" step="0.05" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Stop searching when confidence reaches this threshold (0.95 = 95%)</small>
+                    </div>
+
+                    <h3 style="margin-top: 30px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Auto-Processing</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="setting_auto_processing_enabled" style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;" />
+                            <span style="font-weight: bold;">Enable Auto-Processing</span>
+                        </label>
+                        <small style="color: #666; display: block; margin-top: 5px; margin-left: 30px;">Automatically process new folders when they appear in the input directory</small>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Auto-Processing Delay (seconds):</label>
+                        <input type="number" id="setting_auto_processing_delay" min="0" max="300" step="1" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" />
+                        <small style="color: #666; display: block; margin-top: 5px;">Wait this long after folder creation before starting processing</small>
+                    </div>
+
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; gap: 10px; justify-content: flex-end;">
+                        <button onclick="closeSettings()" style="background: #999;">Cancel</button>
+                        <button onclick="saveSettings()" style="background: #2ecc71;">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allJobs = {};
+        let pollingInterval = null;
+        let currentRefreshIntervalSeconds = 60; // Default to 60 seconds
+
+        // Load folders and jobs on page load
         document.addEventListener('DOMContentLoaded', () => {
+            // Load saved refresh interval from localStorage
+            const savedInterval = localStorage.getItem('refreshInterval');
+            if (savedInterval !== null) {
+                currentRefreshIntervalSeconds = parseInt(savedInterval);
+                document.getElementById('refreshInterval').value = savedInterval;
+            }
+
+            loadSystemInfo();
             loadFolders();
+            loadJobs();
+            startPolling();
         });
 
         async function loadFolders() {
@@ -552,22 +952,60 @@
                 }
 
                 if (data.folders.length === 0) {
-                    folderList.innerHTML = '<p>No folders found in /app/input</p>';
+                    folderList.innerHTML = '<p>No folders found</p>';
                     return;
                 }
 
                 // Create table
-                let html = '<table><thead><tr><th>Folder Name</th><th>TV Show</th><th>Season</th><th>Disk</th><th>Files</th><th>Action</th></tr></thead><tbody>';
+                let html = '<table><thead><tr><th>Folder Name</th><th>TV Show</th><th>Season</th><th>Disk</th><th>Files</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
 
                 data.folders.forEach(folder => {
+                    let statusBadge = '';
+                    const status = folder.job_status ? folder.job_status.status || folder.job_status : null;
+                    const progress = folder.job_status && folder.job_status.progress !== undefined ? folder.job_status.progress : null;
+
+                    if (folder.is_processing && progress !== null) {
+                        statusBadge = `<span style="background: #667eea; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">PROCESSING (${progress}%)</span>`;
+                    } else if (folder.is_processing) {
+                        statusBadge = '<span style="background: #667eea; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">PROCESSING</span>';
+                    } else if (status === 'completed') {
+                        statusBadge = '<span style="background: #2ecc71; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">COMPLETED</span>';
+                    } else if (status === 'error') {
+                        statusBadge = '<span style="background: #e74c3c; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">ERROR</span>';
+                    } else {
+                        statusBadge = '<span style="color: #999; font-size: 11px;">-</span>';
+                    }
+
+                    let actionButtons = '';
+
+                    if (folder.matches_pattern) {
+                        // Folder matches pattern - show Process button only
+                        const processButton = folder.is_processing
+                            ? '<button disabled title="Already processing">Process</button>'
+                            : `<button onclick="identifyFolder('${folder.path}', '${folder.show_name}', ${folder.season})">Process</button>`;
+
+                        actionButtons = processButton;
+                    } else {
+                        // Folder doesn't match pattern - show Identify and Rename buttons
+                        actionButtons = `
+                            <button onclick="showIdentifyModal('${folder.name}')" style="background: #f39c12;">Identify</button>
+                            <button onclick="showRenameDialog('${folder.name}')" style="background: #3498db; margin-left: 5px;">Rename</button>
+                        `;
+                    }
+
                     html += `
                         <tr>
-                            <td>${folder.name}</td>
-                            <td>${folder.show_name}</td>
-                            <td>${folder.season}</td>
-                            <td>${folder.disk}</td>
+                            <td>
+                                <span id="folder-name-${folder.name.replace(/[^a-zA-Z0-9]/g, '_')}">${folder.name}</span>
+                            </td>
+                            <td>${folder.show_name || '-'}</td>
+                            <td>${folder.season !== null ? folder.season : '-'}</td>
+                            <td>${folder.disk !== null ? folder.disk : '-'}</td>
                             <td>${folder.file_count}</td>
-                            <td><button onclick="identifyFolder('${folder.path}', '${folder.show_name}', ${folder.season})">Identify</button></td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                ${actionButtons}
+                            </td>
                         </tr>
                     `;
                 });
@@ -581,10 +1019,6 @@
         }
 
         async function identifyFolder(folderPath, showName, season) {
-            currentFolder = { path: folderPath, showName: showName, season: season };
-            const results = document.getElementById('results');
-            results.innerHTML = '<div class="loading"><div class="spinner"></div>Identifying episodes... This may take a few minutes.</div>';
-
             try {
                 const response = await fetch('/api/identify', {
                     method: 'POST',
@@ -600,42 +1034,238 @@
 
                 if (data.error) {
                     showError(data.error);
-                    results.innerHTML = '';
                     return;
                 }
 
-                identifiedEpisodes = data.episodes;
-                currentSessionId = data.session_id;
-                displayResults(data);
+                showSuccess(`Job ${data.job_id.substring(0, 8)}... started for ${showName} Season ${season}`);
+                // Reload jobs to show the new one
+                loadJobs();
 
             } catch (error) {
-                showError('Failed to identify episodes: ' + error.message);
-                results.innerHTML = '';
+                showError('Failed to start identification: ' + error.message);
             }
         }
 
-        function displayResults(data) {
+        async function loadJobs() {
+            try {
+                const response = await fetch('/api/jobs');
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                allJobs = {};
+                data.jobs.forEach(job => {
+                    allJobs[job.job_id] = job;
+                });
+
+                displayJobs(data.jobs);
+
+            } catch (error) {
+                showError('Failed to load jobs: ' + error.message);
+            }
+        }
+
+        function startPolling() {
+            // Clear any existing interval
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+
+            // Don't start polling if disabled
+            if (currentRefreshIntervalSeconds === 0) {
+                return;
+            }
+
+            // Poll based on configured interval
+            pollingInterval = setInterval(async () => {
+                // Only poll if there are active jobs
+                const activeJobs = Object.values(allJobs).filter(
+                    job => job.status === 'queued' || job.status === 'processing' || job.status === 'moving'
+                );
+
+                if (activeJobs.length > 0) {
+                    await loadJobs();
+                    // Also refresh folder list to update status badges
+                    await loadFolders();
+                }
+            }, currentRefreshIntervalSeconds * 1000);
+        }
+
+        function updateRefreshInterval() {
+            const select = document.getElementById('refreshInterval');
+            currentRefreshIntervalSeconds = parseInt(select.value);
+
+            // Save to localStorage
+            localStorage.setItem('refreshInterval', currentRefreshIntervalSeconds);
+
+            // Restart polling with new interval
+            startPolling();
+
+            // Show feedback
+            if (currentRefreshIntervalSeconds === 0) {
+                showSuccess('Auto-refresh disabled');
+            } else {
+                showSuccess(`Auto-refresh set to ${select.options[select.selectedIndex].text}`);
+            }
+        }
+
+        function displayJobs(jobs) {
+            const resultsDiv = document.getElementById('results');
+
+            if (jobs.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #666; padding: 20px;">No jobs yet. Click "Identify" on a folder to start.</p>';
+                return;
+            }
+
+            let html = '<h2 style="margin-bottom: 15px;">Identification Jobs</h2>';
+
+            jobs.forEach(job => {
+                const statusClass = job.status === 'completed' ? 'success' :
+                                   job.status === 'error' ? 'error' :
+                                   'loading';
+
+                const statusDisplay = job.status === 'processing' || job.status === 'moving' ?
+                    `${job.status} (${job.progress}%)` : job.status;
+
+                html += `
+                    <div style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: ${
+                        job.status === 'completed' ? '#f0fff4' :
+                        job.status === 'error' ? '#fff0f0' :
+                        job.status === 'processing' || job.status === 'moving' ? '#f0f8ff' : '#fafafa'
+                    };">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div>
+                                <strong>${job.show_name} - Season ${job.season}</strong>
+                                <br/>
+                                <small style="color: #666;">${job.folder_path}</small>
+                                <br/>
+                                <small style="color: #666;">Job ID: ${job.job_id.substring(0, 8)}...</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="background: ${
+                                    job.status === 'completed' ? '#2ecc71' :
+                                    job.status === 'error' ? '#e74c3c' :
+                                    job.status === 'processing' || job.status === 'moving' ? '#667eea' : '#999'
+                                }; color: white; padding: 5px 12px; border-radius: 5px; font-weight: bold; text-transform: uppercase; font-size: 12px;">
+                                    ${statusDisplay}
+                                </span>
+                            </div>
+                        </div>
+                        ${job.status === 'processing' || job.status === 'moving' ? `
+                            <div style="margin: 10px 0;">
+                                <div style="background: #f0f0f0; height: 20px; border-radius: 10px; overflow: hidden;">
+                                    <div style="background: #667eea; height: 100%; width: ${job.progress}%; transition: width 0.3s;"></div>
+                                </div>
+                                <small style="color: #666; margin-top: 5px; display: block;">${job.progress_message}</small>
+                            </div>
+                        ` : ''}
+                        ${job.status === 'error' ? `
+                            <div style="margin: 10px 0; color: #c33; font-size: 14px;">
+                                <strong>Error:</strong> ${job.error}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button onclick="deleteJob('${job.job_id}')" style="background: #e74c3c;">Delete Job</button>
+                            </div>
+                        ` : ''}
+                        ${job.status === 'completed' ? `
+                            <div style="margin-top: 10px;">
+                                <button onclick="showJobResults('${job.job_id}')">View Results</button>
+                                <button onclick="deleteJob('${job.job_id}')" style="background: #e74c3c;">Delete Job</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+
+        async function showJobResults(jobId) {
+            const job = allJobs[jobId];
+            if (!job || !job.results) {
+                showError('Job results not available');
+                return;
+            }
+
+            currentJobId = jobId;
+            displayResults(job.results, job.folder_path, job.moved || false);
+        }
+
+        async function deleteJob(jobId) {
+            if (!confirm('Are you sure you want to delete this job?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/jobs/${jobId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess('Job deleted');
+                loadJobs();
+
+            } catch (error) {
+                showError('Failed to delete job: ' + error.message);
+            }
+        }
+
+        let currentResultData = null;
+        let currentSessionId = null;
+        let currentJobMoved = false;
+        let currentJobId = null;
+
+        function displayResults(data, folderPath, moved = false) {
+            // Store current data for rename/move operations
+            currentResultData = {
+                folderPath: folderPath,
+                showName: data.show_name,
+                season: data.season,
+                episodes: data.episodes
+            };
+            currentSessionId = data.session_id;
+            currentJobMoved = moved;
+
             const results = document.getElementById('results');
 
             let html = `
+                <button onclick="loadJobs()" style="margin-bottom: 15px;">← Back to Jobs</button>
                 <div class="folder-info">
                     <strong>TV Show:</strong> ${data.show_name} | <strong>Season:</strong> ${data.season}
                 </div>
                 <table>
                     <thead>
                         <tr>
+                            <th>Keep</th>
+                            <th>Extra</th>
                             <th>Episode #</th>
                             <th>Episode Name</th>
                             <th>Original Filename</th>
+                            <th>Duration</th>
                             <th>Confidence</th>
                             <th>Match</th>
-                            <th>Preview</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
             `;
 
             data.episodes.forEach((ep, index) => {
+                // Initialize keep property if not set (default to true)
+                if (ep.keep === undefined) {
+                    ep.keep = true;
+                }
+
                 const confidenceClass = ep.confidence >= 80 ? 'confidence-high' :
                                        ep.confidence >= 60 ? 'confidence-medium' : 'confidence-low';
 
@@ -643,25 +1273,52 @@
                     '<span class="match-badge match">Match</span>' :
                     '<span class="match-badge no-match">No Match</span>';
 
+                const isExtra = ep.is_extra !== undefined ? ep.is_extra : false;
+                const keepFile = ep.keep;
+
                 html += `
-                    <tr class="episode-row">
+                    <tr class="episode-row ${!keepFile ? 'row-dimmed' : ''}">
+                        <td style="text-align: center;">
+                            <input type="checkbox"
+                                   ${keepFile ? 'checked' : ''}
+                                   data-index="${index}"
+                                   onchange="toggleKeep(${index}, this.checked)"
+                                   style="width: 20px; height: 20px; cursor: pointer;" />
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="checkbox"
+                                   ${isExtra ? 'checked' : ''}
+                                   data-index="${index}"
+                                   onchange="toggleExtra(${index}, this.checked)"
+                                   ${!keepFile ? 'disabled' : ''}
+                                   style="width: 20px; height: 20px; cursor: pointer;" />
+                        </td>
                         <td class="edit-cell">
                             <input type="number"
                                    class="editable-input episode-number-input"
-                                   value="${ep.episode_number}"
+                                   value="${ep.episode_number || ''}"
+                                   data-index="${index}"
+                                   id="episode-number-${index}"
+                                   ${isExtra || !keepFile ? 'disabled' : ''}
                                    onchange="updateEpisode(${index}, 'episode_number', this.value)" />
                         </td>
                         <td class="edit-cell">
                             <input type="text"
                                    class="editable-input"
                                    value="${ep.episode_name}"
+                                   data-index="${index}"
+                                   ${!keepFile ? 'disabled' : ''}
                                    onchange="updateEpisode(${index}, 'episode_name', this.value)" />
                         </td>
                         <td>${ep.original_name}</td>
+                        <td style="font-family: monospace;">${ep.duration || 'Unknown'}</td>
                         <td class="${confidenceClass}">${ep.confidence}%</td>
                         <td>${matchBadge}</td>
                         <td>
-                            <button onclick="openPreviewModal('${ep.original_name}')">Preview All Matches</button>
+                            <button onclick="playVideo('${ep.original_name.replace(/'/g, "\\'")}', '${data.show_name} - ${ep.episode_name}')" style="background: #3498db; margin-right: 5px;">
+                                ▶ Play
+                            </button>
+                            ${!isExtra ? `<button onclick="openPreviewModal('${ep.original_name}', ${index})">Preview</button>` : ''}
                         </td>
                     </tr>
                 `;
@@ -671,8 +1328,14 @@
                     </tbody>
                 </table>
                 <div class="action-buttons">
-                    <button onclick="renameFiles()">Rename</button>
-                    <button onclick="moveFiles()">Move</button>
+                    <button
+                        onclick="saveAndMoveFiles()"
+                        id="saveAndMoveBtn"
+                        ${currentJobMoved ? 'disabled' : ''}
+                        style="background: ${currentJobMoved ? '#999' : '#2ecc71'}; font-size: 16px; padding: 12px 24px; cursor: ${currentJobMoved ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span id="saveAndMoveBtnText">${currentJobMoved ? 'Files Already Moved' : 'Save & Move'}</span>
+                        <div id="saveAndMoveSpinner" class="spinner" style="display: none; width: 16px; height: 16px; border-width: 2px;"></div>
+                    </button>
                 </div>
             `;
 
@@ -680,22 +1343,63 @@
         }
 
         function updateEpisode(index, field, value) {
-            if (identifiedEpisodes && identifiedEpisodes[index]) {
+            if (currentResultData && currentResultData.episodes[index]) {
                 if (field === 'episode_number') {
-                    identifiedEpisodes[index][field] = parseInt(value);
+                    currentResultData.episodes[index][field] = parseInt(value);
                 } else {
-                    identifiedEpisodes[index][field] = value;
+                    currentResultData.episodes[index][field] = value;
                 }
             }
         }
 
+        function toggleExtra(index, isExtra) {
+            if (currentResultData && currentResultData.episodes[index]) {
+                currentResultData.episodes[index].is_extra = isExtra;
+
+                // Get the episode number input field
+                const episodeNumberInput = document.getElementById(`episode-number-${index}`);
+
+                if (isExtra) {
+                    // If marking as extra, clear and disable episode number
+                    currentResultData.episodes[index].episode_number = null;
+                    episodeNumberInput.value = '';
+                    episodeNumberInput.disabled = true;
+                } else {
+                    // If unmarking as extra, enable episode number
+                    episodeNumberInput.disabled = false;
+                }
+            }
+        }
+
+        function toggleKeep(index, keep) {
+            if (currentResultData && currentResultData.episodes[index]) {
+                currentResultData.episodes[index].keep = keep;
+
+                // Redisplay results to update dimmed state and disabled inputs
+                displayResults({
+                    show_name: currentResultData.showName,
+                    season: currentResultData.season,
+                    episodes: currentResultData.episodes,
+                    session_id: currentSessionId
+                }, currentResultData.folderPath, currentJobMoved);
+            }
+        }
+
         async function renameFiles() {
-            if (!currentFolder || !identifiedEpisodes) {
+            if (!currentResultData) {
                 showError('No episodes identified');
                 return;
             }
 
-            if (!confirm('Are you sure you want to rename these files?')) {
+            // Filter episodes to only include those marked as "keep"
+            const filesToRename = currentResultData.episodes.filter(ep => ep.keep !== false);
+
+            if (filesToRename.length === 0) {
+                showError('No files selected to rename. Please enable "Keep" for at least one file.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to rename ${filesToRename.length} file(s)?`)) {
                 return;
             }
 
@@ -704,8 +1408,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        folder_path: currentFolder.path,
-                        episodes: identifiedEpisodes
+                        folder_path: currentResultData.folderPath,
+                        episodes: filesToRename
                     })
                 });
 
@@ -718,17 +1422,22 @@
 
                 showSuccess('Files renamed successfully!');
 
-                // Update the identifiedEpisodes with new names from the rename response
+                // Update the episodes with new names from the rename response
                 if (data.results) {
                     data.results.forEach((result, index) => {
-                        if (identifiedEpisodes[index]) {
-                            identifiedEpisodes[index].original_name = result.new_name;
+                        if (currentResultData.episodes[index] && result.success) {
+                            currentResultData.episodes[index].original_name = result.new;
                         }
                     });
                 }
 
                 // Redisplay the results with updated names
-                displayResults(identifiedEpisodes, currentFolder.show_name, currentFolder.season);
+                displayResults({
+                    show_name: currentResultData.showName,
+                    season: currentResultData.season,
+                    episodes: currentResultData.episodes,
+                    session_id: currentSessionId
+                }, currentResultData.folderPath, currentJobMoved);
 
                 // Refresh folder list
                 loadFolders();
@@ -744,12 +1453,20 @@
         }
 
         async function moveFiles() {
-            if (!currentFolder || !identifiedEpisodes) {
+            if (!currentResultData) {
                 showError('No episodes identified');
                 return;
             }
 
-            if (!confirm('Are you sure you want to move these files to /app/output?')) {
+            // Filter episodes to only include those marked as "keep"
+            const filesToMove = currentResultData.episodes.filter(ep => ep.keep !== false);
+
+            if (filesToMove.length === 0) {
+                showError('No files selected to move. Please enable "Keep" for at least one file.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to move ${filesToMove.length} file(s)?`)) {
                 return;
             }
 
@@ -758,10 +1475,10 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        folder_path: currentFolder.path,
-                        episodes: identifiedEpisodes,
-                        show_name: currentFolder.showName,
-                        season: currentFolder.season
+                        folder_path: currentResultData.folderPath,
+                        episodes: filesToMove,
+                        show_name: currentResultData.showName,
+                        season: currentResultData.season
                     })
                 });
 
@@ -774,10 +1491,107 @@
 
                 showSuccess('Files moved successfully!');
                 loadFolders();
-                document.getElementById('results').innerHTML = '';
+                loadJobs();
 
             } catch (error) {
                 showError('Failed to move files: ' + error.message);
+            }
+        }
+
+        async function saveAndMoveFiles() {
+            if (!currentResultData) {
+                showError('No episodes identified');
+                return;
+            }
+
+            // Check if already moved
+            const job = allJobs[Object.keys(allJobs).find(id => allJobs[id].folder_path === currentResultData.folderPath)];
+            if (job && job.moved) {
+                showError('Files have already been moved. This action cannot be performed again.');
+                return;
+            }
+
+            // Filter episodes to only include those marked as "keep"
+            const filesToProcess = currentResultData.episodes.filter(ep => ep.keep !== false);
+
+            if (filesToProcess.length === 0) {
+                showError('No files selected to move. Please enable "Keep" for at least one file.');
+                return;
+            }
+
+            if (!confirm(`This will rename and move ${filesToProcess.length} file(s). Continue?`)) {
+                return;
+            }
+
+            // Show spinner and disable button
+            const btn = document.getElementById('saveAndMoveBtn');
+            const btnText = document.getElementById('saveAndMoveBtnText');
+            const spinner = document.getElementById('saveAndMoveSpinner');
+
+            if (btn && btnText && spinner) {
+                btn.disabled = true;
+                btn.style.cursor = 'not-allowed';
+                btnText.textContent = 'Moving Files...';
+                spinner.style.display = 'block';
+            }
+
+            try {
+                // Call the combined save-and-move endpoint
+                const response = await fetch('/api/save-and-move', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        folder_path: currentResultData.folderPath,
+                        episodes: filesToProcess,
+                        show_name: currentResultData.showName,
+                        season: currentResultData.season
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError('Save & Move failed: ' + data.error);
+                    // Re-enable button on error unless already moved
+                    if (response.status !== 409 && btn && btnText && spinner) {
+                        btn.disabled = false;
+                        btn.style.cursor = 'pointer';
+                        btn.style.background = '#2ecc71';
+                        btnText.textContent = 'Save & Move';
+                        spinner.style.display = 'none';
+                    }
+                    return;
+                }
+
+                // Mark the job as moved and update UI
+                currentJobMoved = true;
+                if (job) {
+                    job.moved = true;
+                }
+
+                // Hide spinner and update button to final state
+                if (btn && btnText && spinner) {
+                    spinner.style.display = 'none';
+                    btn.disabled = true;
+                    btn.style.background = '#999';
+                    btn.style.cursor = 'not-allowed';
+                    btnText.textContent = 'Files Already Moved';
+                }
+
+                showSuccess('Files successfully renamed and moved!');
+                loadFolders();
+                loadJobs();
+
+            } catch (error) {
+                showError('Failed to save and move files: ' + error.message);
+                // Re-enable button on error
+                if (btn && btnText && spinner) {
+                    btn.disabled = false;
+                    btn.style.cursor = 'pointer';
+                    btn.style.background = '#2ecc71';
+                    btnText.textContent = 'Save & Move';
+                    spinner.style.display = 'none';
+                }
             }
         }
 
@@ -794,11 +1608,18 @@
         }
 
         // Preview Modal Functions
-        async function openPreviewModal(videoFile) {
+        let currentPreviewVideoFile = null;
+        let currentPreviewEpisodeIndex = null;
+
+        async function openPreviewModal(videoFile, episodeIndex) {
             if (!currentSessionId) {
                 showError('No session data available');
                 return;
             }
+
+            // Store for override functionality
+            currentPreviewVideoFile = videoFile;
+            currentPreviewEpisodeIndex = episodeIndex;
 
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('previewContent');
@@ -807,7 +1628,12 @@
             content.innerHTML = '<div class="loading"><div class="spinner"></div>Loading episode images...</div>';
 
             try {
-                const url = `/api/episode-images?session_id=${encodeURIComponent(currentSessionId)}&video_file=${encodeURIComponent(videoFile)}`;
+                // Build URL with optional job_id parameter for persisted data
+                let url = `/api/episode-images?session_id=${encodeURIComponent(currentSessionId)}&video_file=${encodeURIComponent(videoFile)}`;
+                if (currentJobId) {
+                    url += `&job_id=${encodeURIComponent(currentJobId)}`;
+                }
+
                 const response = await fetch(url);
                 const data = await response.json();
 
@@ -828,15 +1654,9 @@
 
             let html = `
                 <div class="preview-header">
-                    ${data.matched_frame ? `
-                        <img src="data:image/jpeg;base64,${data.matched_frame}"
-                             alt="Video Frame"
-                             class="preview-video-frame" />
-                    ` : ''}
                     <div class="preview-video-info">
                         <h3>Video: ${data.video_file}</h3>
-                        <p>Comparing this video frame against all TheMovieDB episode images</p>
-                        <p><strong>Note:</strong> Matches 80%+ are weighted more heavily in the confidence calculation</p>
+                        <p><strong>Interactive Comparison:</strong> Drag the slider left/right on each image to compare the video frame against TMDB episode stills</p>
                     </div>
                 </div>
                 <div class="episodes-grid">
@@ -857,21 +1677,70 @@
                             <div class="episode-card-title">
                                 Episode ${episode.episode_number}: ${episode.episode_name}
                             </div>
-                            <div class="episode-score ${scoreClass}">
-                                ${episode.score}%
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="episode-score ${scoreClass}">
+                                    ${episode.score}%
+                                </div>
+                                <button onclick="overrideEpisode(${episode.episode_number}, '${episode.episode_name.replace(/'/g, "\\'")}', ${episode.score})"
+                                        style="background: #f39c12; color: white; padding: 5px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">
+                                    Override
+                                </button>
                             </div>
                         </div>
                         <div class="episode-images">
                 `;
 
                 episode.images.forEach((image, idx) => {
+                    // Get individual image score if available
+                    const imageScore = episode.image_scores && episode.image_scores[idx] !== undefined
+                        ? episode.image_scores[idx]
+                        : null;
+
+                    const scoreClass = imageScore >= 80 ? 'high' :
+                                      imageScore >= 60 ? 'medium' : 'low';
+
+                    // Create a unique ID for this comparison slider
+                    const sliderId = `slider-${episode.episode_number}-${idx}`;
+
+                    // Get the specific matched frame for THIS TMDB still (not the overall matched_frame)
+                    const matchedFrame = episode.matched_frames && episode.matched_frames[idx]
+                        ? episode.matched_frames[idx]
+                        : null;
+
+                    const matchedFrameSrc = matchedFrame
+                        ? `data:image/jpeg;base64,${matchedFrame}`
+                        : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2NjYyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBWaWRlbyBGcmFtZTwvdGV4dD48L3N2Zz4=';
+
                     html += `
                         <div class="episode-image-wrapper">
-                            <img src="data:image/jpeg;base64,${image}"
-                                 alt="Episode ${episode.episode_number} - Image ${idx + 1}" />
-                            ${episode.images.length > 1 ? `
-                                <span class="image-count-badge">${idx + 1}/${episode.images.length}</span>
-                            ` : ''}
+                            <div class="comparison-slider" id="${sliderId}">
+                                <!-- Video frame (left side / before) -->
+                                <div class="comparison-before">
+                                    <img src="${matchedFrameSrc}"
+                                         alt="Video Frame" />
+                                </div>
+
+                                <!-- TMDB still (right side / after) -->
+                                <div class="comparison-after" style="width: 50%;">
+                                    <img src="data:image/jpeg;base64,${image}"
+                                         alt="Episode ${episode.episode_number} - Image ${idx + 1}" />
+                                </div>
+
+                                <!-- Draggable handle -->
+                                <div class="comparison-handle" style="left: 50%;"></div>
+
+                                <!-- Labels -->
+                                <span class="comparison-label left">Video</span>
+                                <span class="comparison-label right">TMDB</span>
+
+                                <!-- Score badge -->
+                                ${imageScore !== null ? `
+                                    <span class="image-match-badge ${scoreClass}">${imageScore}%</span>
+                                ` : ''}
+                                ${episode.images.length > 1 ? `
+                                    <span class="image-count-badge">${idx + 1}/${episode.images.length}</span>
+                                ` : ''}
+                            </div>
                         </div>
                     `;
                 });
@@ -884,10 +1753,225 @@
 
             html += '</div>';
             content.innerHTML = html;
+
+            // Initialize all comparison sliders after DOM is updated
+            setTimeout(() => initializeComparisonSliders(), 0);
+        }
+
+        function initializeComparisonSliders() {
+            const sliders = document.querySelectorAll('.comparison-slider');
+
+            sliders.forEach(slider => {
+                const handle = slider.querySelector('.comparison-handle');
+                const afterDiv = slider.querySelector('.comparison-after');
+                let isDragging = false;
+
+                function updateSlider(x) {
+                    const rect = slider.getBoundingClientRect();
+                    let position = ((x - rect.left) / rect.width) * 100;
+
+                    // Clamp between 0 and 100
+                    position = Math.max(0, Math.min(100, position));
+
+                    // Update the divider position and right-side width
+                    // afterDiv is positioned from the right, so we use (100 - position)
+                    handle.style.left = position + '%';
+                    afterDiv.style.width = (100 - position) + '%';
+                }
+
+                function startDrag(e) {
+                    isDragging = true;
+                    slider.style.cursor = 'ew-resize';
+                    e.preventDefault();
+                }
+
+                function drag(e) {
+                    if (!isDragging) return;
+
+                    const x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                    updateSlider(x);
+                }
+
+                function stopDrag() {
+                    isDragging = false;
+                    slider.style.cursor = 'ew-resize';
+                }
+
+                // Mouse events
+                handle.addEventListener('mousedown', startDrag);
+                slider.addEventListener('mousedown', (e) => {
+                    if (e.target === slider || e.target.closest('.comparison-before') || e.target.closest('.comparison-after')) {
+                        startDrag(e);
+                        const x = e.clientX;
+                        updateSlider(x);
+                    }
+                });
+
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+
+                // Touch events for mobile
+                handle.addEventListener('touchstart', startDrag);
+                slider.addEventListener('touchstart', (e) => {
+                    if (e.target === slider || e.target.closest('.comparison-before') || e.target.closest('.comparison-after')) {
+                        startDrag(e);
+                        const x = e.touches[0].clientX;
+                        updateSlider(x);
+                    }
+                });
+
+                document.addEventListener('touchmove', drag);
+                document.addEventListener('touchend', stopDrag);
+            });
         }
 
         function closePreviewModal() {
             document.getElementById('previewModal').style.display = 'none';
+        }
+
+        function overrideEpisode(episodeNumber, episodeName, confidence) {
+            if (!currentResultData || currentPreviewEpisodeIndex === null) {
+                showError('Cannot override: episode data not available');
+                return;
+            }
+
+            // Get current episode info
+            const currentEpisode = currentResultData.episodes[currentPreviewEpisodeIndex];
+            const currentEpNum = currentEpisode.episode_number;
+            const currentEpName = currentEpisode.episode_name;
+
+            // Confirm override
+            const message = `Override episode identification?\n\n` +
+                          `Current: Episode ${currentEpNum} - ${currentEpName}\n` +
+                          `New: Episode ${episodeNumber} - ${episodeName}\n` +
+                          `Confidence: ${confidence}%\n\n` +
+                          `This will update the episode number and name.`;
+
+            if (!confirm(message)) {
+                return;
+            }
+
+            // Update the episode data
+            currentResultData.episodes[currentPreviewEpisodeIndex].episode_number = episodeNumber;
+            currentResultData.episodes[currentPreviewEpisodeIndex].episode_name = episodeName;
+            currentResultData.episodes[currentPreviewEpisodeIndex].confidence = confidence;
+
+            // Redisplay the results to show the update
+            displayResults({
+                show_name: currentResultData.showName,
+                season: currentResultData.season,
+                episodes: currentResultData.episodes,
+                session_id: currentSessionId
+            }, currentResultData.folderPath, currentJobMoved);
+
+            // Close the preview modal
+            closePreviewModal();
+
+            // Show success message
+            showSuccess(`Episode overridden to: Episode ${episodeNumber} - ${episodeName}`);
+        }
+
+        // Video Player Functions
+        function playVideo(filename, title) {
+            if (!currentResultData) {
+                showError('Video path not available');
+                return;
+            }
+
+            // Encode folder path by replacing path separators with |
+            const encodedFolderPath = currentResultData.folderPath.replace(/\\/g, '|').replace(/\//g, '|');
+            const encodedFilename = encodeURIComponent(filename);
+
+            const videoUrl = `/api/video/${encodedFolderPath}/${encodedFilename}`;
+
+            console.log('Playing video:', filename);
+            console.log('Folder path:', currentResultData.folderPath);
+            console.log('Encoded folder:', encodedFolderPath);
+            console.log('Video URL:', videoUrl);
+
+            const modal = document.getElementById('videoModal');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoTitle = document.getElementById('videoTitle');
+
+            // Set title
+            videoTitle.textContent = title;
+
+            // Reset the player
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            videoPlayer.load();
+
+            // Set video source directly on video element (not using <source> tag)
+            videoPlayer.src = videoUrl;
+
+            // Determine MIME type from file extension and set it
+            const ext = filename.split('.').pop().toLowerCase();
+            const mimeTypes = {
+                'mkv': 'video/x-matroska',
+                'mp4': 'video/mp4',
+                'avi': 'video/x-msvideo',
+                'mov': 'video/quicktime',
+                'webm': 'video/webm',
+                'm4v': 'video/x-m4v'
+            };
+            const mimeType = mimeTypes[ext] || 'video/x-matroska';
+
+            // Some browsers need the type attribute
+            if (videoPlayer.canPlayType(mimeType)) {
+                console.log('Browser can play:', mimeType);
+            } else {
+                console.warn('Browser may not support:', mimeType);
+            }
+
+            // Load the video
+            videoPlayer.load();
+
+            // Show modal
+            modal.style.display = 'block';
+
+            // Listen for errors
+            videoPlayer.onerror = function(e) {
+                console.error('Video error:', e);
+                console.error('Video error code:', videoPlayer.error ? videoPlayer.error.code : 'unknown');
+                console.error('Video error message:', videoPlayer.error ? videoPlayer.error.message : 'unknown');
+                showError('Failed to load video. Check console for details.');
+            };
+
+            // Listen for successful load
+            videoPlayer.onloadedmetadata = function() {
+                console.log('Video metadata loaded successfully');
+            };
+
+            // Auto-play when ready
+            videoPlayer.oncanplay = function() {
+                console.log('Video can play');
+                videoPlayer.play().catch(err => {
+                    console.log('Auto-play prevented:', err);
+                    // Show error to user if video won't play
+                    if (err.name === 'NotSupportedError') {
+                        showError('Video format not supported by your browser. File: ' + filename);
+                    }
+                });
+            };
+        }
+
+        function closeVideoPlayer() {
+            const modal = document.getElementById('videoModal');
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            // Pause and reset video
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.removeAttribute('src');
+            videoPlayer.load();
+
+            // Clear event handlers
+            videoPlayer.onerror = null;
+            videoPlayer.onloadedmetadata = null;
+            videoPlayer.oncanplay = null;
+
+            // Hide modal
+            modal.style.display = 'none';
         }
 
         // Log Viewer Functions
@@ -939,16 +2023,390 @@
             }
         }
 
+        async function clearLogs() {
+            if (!confirm('Are you sure you want to clear all application logs? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/logs', {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess('Logs cleared successfully!');
+                loadLogs(); // Reload to show empty logs
+
+            } catch (error) {
+                showError('Failed to clear logs: ' + error.message);
+            }
+        }
+
+        // System Info Functions
+        async function loadSystemInfo() {
+            try {
+                const response = await fetch('/api/system-info');
+                const data = await response.json();
+
+                if (data.error) {
+                    return; // Silently fail, don't show error
+                }
+
+                displayCompactSystemInfo(data);
+
+            } catch (error) {
+                // Silently fail
+            }
+        }
+
+        function displayCompactSystemInfo(data) {
+            const container = document.getElementById('systemInfo');
+
+            const gpuEnabled = data.gpu_acceleration.enabled;
+            const hwaccelType = data.video_acceleration?.hwaccel_type;
+            const gpuScalingAvailable = data.video_acceleration?.gpu_scaling_available;
+
+            let notifications = [];
+
+            // Check for GPU acceleration warning
+            if (!gpuEnabled) {
+                notifications.push(`
+                    <div style="background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 6px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <strong style="display: flex; align-items: center; gap: 8px; color: #856404; margin-bottom: 8px;">
+                            <span style="font-size: 20px;">⚠️</span>
+                            GPU Acceleration Disabled
+                        </strong>
+                        <div style="color: #856404; font-size: 14px;">
+                            Processing is 6-8x slower without GPU acceleration.
+                        </div>
+                    </div>
+                `);
+            }
+
+            // Check for GPU scaling warning (only if CUDA is available but GPU scaling isn't)
+            if (hwaccelType === 'cuda' && !gpuScalingAvailable) {
+                notifications.push(`
+                    <div style="background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 6px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <strong style="display: flex; align-items: center; gap: 8px; color: #856404; margin-bottom: 8px;">
+                            <span style="font-size: 20px;">ℹ️</span>
+                            GPU Scaling Unavailable
+                        </strong>
+                        <div style="color: #856404; font-size: 14px;">
+                            CUDA hardware acceleration is enabled for video decoding, but GPU scaling is unavailable. Frame extraction will use CPU scaling (still fast).
+                        </div>
+                    </div>
+                `);
+            }
+
+            container.innerHTML = notifications.join('');
+        }
+
+        // Identify Folder Modal Functions
+        let currentIdentifyFolder = null;
+
+        function showIdentifyModal(folderName) {
+            currentIdentifyFolder = folderName;
+            const modal = document.getElementById('identifyModal');
+
+            document.getElementById('identifyFolderName').textContent = folderName;
+            document.getElementById('identifyShowName').value = '';
+            document.getElementById('identifySeason').value = '';
+            document.getElementById('identifyDisk').value = '';
+            document.getElementById('identifyPreview').textContent = '-';
+
+            modal.style.display = 'block';
+
+            // Add input listeners for live preview
+            const showInput = document.getElementById('identifyShowName');
+            const seasonInput = document.getElementById('identifySeason');
+            const diskInput = document.getElementById('identifyDisk');
+
+            const updatePreview = () => {
+                const show = showInput.value.trim();
+                const season = seasonInput.value;
+                const disk = diskInput.value;
+
+                if (show && season && disk) {
+                    document.getElementById('identifyPreview').textContent = `${show} s${season}d${disk}`;
+                } else {
+                    document.getElementById('identifyPreview').textContent = '-';
+                }
+            };
+
+            showInput.addEventListener('input', updatePreview);
+            seasonInput.addEventListener('input', updatePreview);
+            diskInput.addEventListener('input', updatePreview);
+        }
+
+        function closeIdentifyModal() {
+            document.getElementById('identifyModal').style.display = 'none';
+            currentIdentifyFolder = null;
+        }
+
+        async function saveIdentifyFolder() {
+            const showName = document.getElementById('identifyShowName').value.trim();
+            const season = document.getElementById('identifySeason').value;
+            const disk = document.getElementById('identifyDisk').value;
+
+            if (!showName) {
+                showError('Please enter a TV show name');
+                return;
+            }
+
+            if (!season || season < 1) {
+                showError('Please enter a valid season number');
+                return;
+            }
+
+            if (!disk || disk < 1) {
+                showError('Please enter a valid disk number');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/folders/${encodeURIComponent(currentIdentifyFolder)}/identify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        show_name: showName,
+                        season: parseInt(season),
+                        disk: parseInt(disk)
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess(`Folder identified as "${data.new_name}"`);
+                closeIdentifyModal();
+                loadFolders(); // Reload the folder list
+
+            } catch (error) {
+                showError('Failed to identify folder: ' + error.message);
+            }
+        }
+
+        // Folder Rename Functions
+        function showRenameDialog(folderName) {
+            const newName = prompt(`Rename folder "${folderName}" to:`, folderName);
+
+            if (newName === null || newName === '') {
+                return; // User cancelled or entered empty name
+            }
+
+            if (newName === folderName) {
+                showError('New name is the same as the old name');
+                return;
+            }
+
+            renameFolder(folderName, newName);
+        }
+
+        async function renameFolder(oldName, newName) {
+            try {
+                const response = await fetch(`/api/folders/${encodeURIComponent(oldName)}/rename`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        new_name: newName
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess(`Folder renamed from "${oldName}" to "${newName}"`);
+                loadFolders(); // Reload the folder list
+
+            } catch (error) {
+                showError('Failed to rename folder: ' + error.message);
+            }
+        }
+
+        // Settings Functions
+        async function openSettings() {
+            const modal = document.getElementById('settingsModal');
+            modal.style.display = 'block';
+
+            // Load current settings
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                const settings = data.settings;
+
+                // Populate form fields
+                document.getElementById('setting_tmdb_api_key').value = settings.tmdb_api_key || '';
+                document.getElementById('setting_frame_height').value = settings.frame_height || 480;
+                document.getElementById('setting_frame_fps').value = settings.frame_fps || '';
+                document.getElementById('setting_frame_start_offset').value = settings.frame_start_offset || 0.0;
+                document.getElementById('setting_frame_end_offset').value = settings.frame_end_offset || 1.0;
+                document.getElementById('setting_extraction_parallel_enabled').checked = settings.extraction_parallel_enabled !== false;
+                document.getElementById('setting_extraction_parallel_workers').value = settings.extraction_parallel_workers || 4;
+                document.getElementById('setting_extraction_output_format').value = settings.extraction_output_format || 'jpg';
+                document.getElementById('setting_matcher_max_candidates').value = settings.matcher_max_candidates || 5000;
+                document.getElementById('setting_matcher_gpu_batch_size').value = settings.matcher_gpu_batch_size || 500;
+                document.getElementById('setting_matcher_cpu_batch_size').value = settings.matcher_cpu_batch_size || 50;
+                document.getElementById('setting_matcher_early_stop_threshold').value = settings.matcher_early_stop_threshold || 0.95;
+                document.getElementById('setting_auto_processing_enabled').checked = settings.auto_processing_enabled || false;
+                document.getElementById('setting_auto_processing_delay').value = settings.auto_processing_delay || 30;
+
+            } catch (error) {
+                showError('Failed to load settings: ' + error.message);
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        async function saveSettings() {
+            try {
+                // Parse FPS value - treat empty or 0 as null (extract all frames)
+                const fpsInput = document.getElementById('setting_frame_fps').value.trim();
+                const fpsValue = fpsInput === '' || parseFloat(fpsInput) === 0 ? null : parseFloat(fpsInput);
+
+                const settings = {
+                    tmdb_api_key: document.getElementById('setting_tmdb_api_key').value.trim(),
+                    frame_height: parseInt(document.getElementById('setting_frame_height').value),
+                    frame_fps: fpsValue,
+                    frame_start_offset: parseFloat(document.getElementById('setting_frame_start_offset').value),
+                    frame_end_offset: parseFloat(document.getElementById('setting_frame_end_offset').value),
+                    extraction_parallel_enabled: document.getElementById('setting_extraction_parallel_enabled').checked,
+                    extraction_parallel_workers: parseInt(document.getElementById('setting_extraction_parallel_workers').value),
+                    extraction_output_format: document.getElementById('setting_extraction_output_format').value,
+                    matcher_max_candidates: parseInt(document.getElementById('setting_matcher_max_candidates').value),
+                    matcher_gpu_batch_size: parseInt(document.getElementById('setting_matcher_gpu_batch_size').value),
+                    matcher_cpu_batch_size: parseInt(document.getElementById('setting_matcher_cpu_batch_size').value),
+                    matcher_early_stop_threshold: parseFloat(document.getElementById('setting_matcher_early_stop_threshold').value),
+                    auto_processing_enabled: document.getElementById('setting_auto_processing_enabled').checked,
+                    auto_processing_delay: parseInt(document.getElementById('setting_auto_processing_delay').value)
+                };
+
+                // Validate
+                if (!settings.tmdb_api_key) {
+                    showError('TMDB API Key is required');
+                    return;
+                }
+
+                if (settings.frame_height < 240 || settings.frame_height > 1080) {
+                    showError('Frame height must be between 240 and 1080');
+                    return;
+                }
+
+                if (settings.frame_start_offset < 0 || settings.frame_start_offset > 1) {
+                    showError('Frame start offset must be between 0.0 and 1.0');
+                    return;
+                }
+
+                if (settings.frame_end_offset < 0 || settings.frame_end_offset > 1) {
+                    showError('Frame end offset must be between 0.0 and 1.0');
+                    return;
+                }
+
+                if (settings.frame_start_offset >= settings.frame_end_offset) {
+                    showError('Frame start offset must be less than frame end offset');
+                    return;
+                }
+
+                if (settings.frame_fps !== null && (settings.frame_fps < 0 || settings.frame_fps > 60)) {
+                    showError('Frame FPS must be between 0 and 60 (or empty for all frames)');
+                    return;
+                }
+
+                if (settings.matcher_max_candidates < 100 || settings.matcher_max_candidates > 20000) {
+                    showError('Max candidate frames must be between 100 and 20000');
+                    return;
+                }
+
+                if (settings.matcher_gpu_batch_size < 50 || settings.matcher_gpu_batch_size > 2000) {
+                    showError('GPU batch size must be between 50 and 2000');
+                    return;
+                }
+
+                if (settings.matcher_cpu_batch_size < 10 || settings.matcher_cpu_batch_size > 200) {
+                    showError('CPU batch size must be between 10 and 200');
+                    return;
+                }
+
+                if (settings.matcher_early_stop_threshold < 0.5 || settings.matcher_early_stop_threshold > 1.0) {
+                    showError('Early stop threshold must be between 0.5 and 1.0');
+                    return;
+                }
+
+                if (settings.extraction_parallel_workers < 1 || settings.extraction_parallel_workers > 8) {
+                    showError('Parallel workers must be between 1 and 8');
+                    return;
+                }
+
+                if (!['jpg', 'png'].includes(settings.extraction_output_format)) {
+                    showError('Output format must be jpg or png');
+                    return;
+                }
+
+                // Save settings
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                showSuccess('Settings saved successfully! Changes will apply to new jobs.');
+                closeSettings();
+
+            } catch (error) {
+                showError('Failed to save settings: ' + error.message);
+            }
+        }
+
         // Close modals when clicking outside of them
         window.onclick = function(event) {
             const logModal = document.getElementById('logModal');
             const previewModal = document.getElementById('previewModal');
+            const identifyModal = document.getElementById('identifyModal');
+            const videoModal = document.getElementById('videoModal');
+            const settingsModal = document.getElementById('settingsModal');
 
             if (event.target == logModal) {
                 closeLogViewer();
             }
             if (event.target == previewModal) {
                 closePreviewModal();
+            }
+            if (event.target == identifyModal) {
+                closeIdentifyModal();
+            }
+            if (event.target == videoModal) {
+                closeVideoPlayer();
+            }
+            if (event.target == settingsModal) {
+                closeSettings();
             }
         }
     </script>

@@ -2,11 +2,11 @@ FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 # Install NVIDIA video codec SDK libraries
 # These provide libnvcuvid.so for hardware video decoding
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libnvidia-decode-530 \
-    libnvidia-encode-530 \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y --no-install-recommends \
+#    libnvidia-decode-530 \
+#    libnvidia-encode-530 \
+#    && rm -rf /var/lib/apt/lists/*
 
 # Install Python 3.11
 RUN apt-get update && apt-get install -y \

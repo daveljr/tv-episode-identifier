@@ -14,7 +14,8 @@ class VideoService:
     - ALWAYS stores frames on filesystem
     """
 
-    def __init__(self, frame_height=480, start_offset=0.05, end_offset=0.95, base_temp_dir='/app/temp'):
+    def __init__(self, frame_height=480, start_offset=0.05, end_offset=0.95, fps=None, base_temp_dir='/app/temp',
+                 parallel_enabled=True, parallel_workers=4, output_format='jpg'):
         """
         Initialize VideoService with optimized settings
 
@@ -22,12 +23,22 @@ class VideoService:
             frame_height: Height in pixels for extracted frames (default: 480, width auto-calculated)
             start_offset: Percentage into video to start extraction (default: 0.05 = 5%)
             end_offset: Percentage into video to end extraction (default: 0.95 = 95%)
+            fps: Target frames per second for extraction (default: None = extract all frames)
+                 Recommended: 1-2 fps for episode matching (reduces frames by 92-98%)
             base_temp_dir: Base directory for temporary files (default: /app/temp)
+            parallel_enabled: Enable parallel frame extraction (default: True)
+            parallel_workers: Number of parallel FFmpeg processes (default: 4)
+            output_format: Output format - 'jpg' or 'png' (default: 'jpg')
+                          PNG is faster for extraction but larger files
         """
         self.frame_height = frame_height
         self.start_offset = start_offset
         self.end_offset = end_offset
+        self.fps = fps
         self.base_temp_dir = Path(base_temp_dir)
+        self.parallel_enabled = parallel_enabled
+        self.parallel_workers = parallel_workers
+        self.output_format = output_format.lower()
         self.hwaccel_type = None
         self.gpu_scaling_available = False  # Track if GPU scaling (scale_cuda) works
 
@@ -42,7 +53,12 @@ class VideoService:
         logger.info(f"  Hardware Acceleration: {self.hwaccel_type.upper() if self.hwaccel_type else 'CPU (No GPU)'}")
         if self.gpu_scaling_available:
             logger.info(f"  GPU Scaling: ENABLED (scale_cuda)")
-        logger.info(f"  Frame Extraction: ALL FRAMES (not selective)")
+        logger.info(f"  Parallel Extraction: {'ENABLED' if self.parallel_enabled else 'DISABLED'} ({self.parallel_workers} workers)")
+        logger.info(f"  Output Format: {self.output_format.upper()}")
+        if self.fps:
+            logger.info(f"  Frame Extraction: {self.fps} FPS (selective)")
+        else:
+            logger.info(f"  Frame Extraction: ALL FRAMES (not selective)")
         logger.info(f"  Frame Range: {self.start_offset*100:.1f}% - {self.end_offset*100:.1f}% of video")
         logger.info(f"  Frame Size: height={self.frame_height}px, width=auto (aspect ratio preserved)")
         logger.info(f"  Storage: Filesystem ({self.base_temp_dir})")
@@ -161,7 +177,7 @@ class VideoService:
                     '-hwaccel', 'cuda',
                     '-hwaccel_output_format', 'cuda',  # Keep frames in GPU memory
                     '-i', test_video_path,
-                    '-vf', 'scale_cuda=-1:480,hwdownload,format=yuv420p',
+                    '-vf', 'scale_cuda=-1:480,hwdownload,format=nv12',  # nv12 is CUDA-compatible
                     '-frames:v', '1',
                     '-f', 'null', '-'
                 ]
@@ -172,7 +188,7 @@ class VideoService:
                     '-hwaccel', 'cuda',
                     '-hwaccel_output_format', 'cuda',
                     '-f', 'lavfi', '-i', 'testsrc=duration=0.1:size=640x480:rate=1',
-                    '-vf', 'scale_cuda=-1:480,hwdownload,format=yuv420p',
+                    '-vf', 'scale_cuda=-1:480,hwdownload,format=nv12',  # nv12 is CUDA-compatible
                     '-f', 'null', '-'
                 ]
 
@@ -198,20 +214,28 @@ class VideoService:
             self.gpu_scaling_available = False
             logger.debug(f"GPU scaling test exception: {e}")
 
-    def extract_frames(self, video_path, folder_name):
+    def extract_frames(self, video_path, folder_name=None, job_id=None):
         """
         Extract ALL frames from a video file
-        Stores frames on filesystem in /app/temp/{folder_name}/{video_stem}/
+        Stores frames on filesystem in job-specific or folder-specific directory
+        Uses parallel extraction if enabled for better GPU utilization
 
         Args:
             video_path: Path to video file
-            folder_name: Folder name to use for organizing frames
+            folder_name: Folder name to use for organizing frames (legacy, for cleanup)
+            job_id: Job ID for job-specific frame storage (preferred)
 
         Returns:
             List[str]: List of frame file paths
         """
         video_stem = Path(video_path).stem
-        frames_dir = self.base_temp_dir / folder_name / video_stem
+
+        # Use job-specific directory if job_id provided, otherwise use folder_name
+        if job_id:
+            frames_dir = self.base_temp_dir / 'jobs' / job_id / 'frames' / video_stem
+        else:
+            frames_dir = self.base_temp_dir / folder_name / video_stem
+
         frames_dir.mkdir(parents=True, exist_ok=True)
 
         try:
@@ -226,31 +250,163 @@ class VideoService:
             end_time = duration * self.end_offset
             extract_duration = end_time - start_time
 
-            # Output pattern
-            output_pattern = str(frames_dir / 'frame%08d.jpg')
-
-            logger.info(f"Extracting ALL frames from: {Path(video_path).name}")
+            logger.info(f"Extracting frames from: {Path(video_path).name}")
             logger.info(f"  Time range: {start_time:.2f}s - {end_time:.2f}s ({extract_duration:.2f}s total)")
             logger.info(f"  Output: {frames_dir}")
 
-            # Build and execute ffmpeg command
+            # Use parallel extraction if enabled and duration is long enough
+            if self.parallel_enabled and extract_duration > 60:
+                frame_files = self._extract_frames_parallel(
+                    video_path, frames_dir, start_time, end_time
+                )
+            else:
+                frame_files = self._extract_frames_sequential(
+                    video_path, frames_dir, start_time, end_time
+                )
+
+            if frame_files:
+                logger.info(f"✓ Extracted {len(frame_files)} frames → {frames_dir}")
+            else:
+                logger.warning(f"No frames extracted from {Path(video_path).name}")
+
+            return frame_files
+
+        except Exception as e:
+            logger.error(f"Error extracting frames from {video_path}: {e}")
+            return []
+
+    def _extract_frames_sequential(self, video_path, frames_dir, start_time, end_time):
+        """
+        Sequential frame extraction (original method)
+
+        Args:
+            video_path: Path to video file
+            frames_dir: Directory to store frames
+            start_time: Start time in seconds
+            end_time: End time in seconds
+
+        Returns:
+            List[str]: List of frame file paths
+        """
+        # Determine file extension based on output format
+        ext = 'png' if self.output_format == 'png' else 'jpg'
+        output_pattern = str(frames_dir / f'frame%08d.{ext}')
+
+        # Build and execute ffmpeg command
+        cmd = self._build_ffmpeg_command(video_path, output_pattern, start_time, end_time)
+
+        result = subprocess.run(cmd, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            logger.error(f"FFmpeg extraction failed for {Path(video_path).name}")
+            logger.error(f"Error: {result.stderr[-1000:]}")  # Last 1000 chars
+            return []
+
+        # Get all extracted frames
+        frame_files = sorted(frames_dir.glob(f'frame*.{ext}'))
+        return [str(f) for f in frame_files]
+
+    def _extract_frames_parallel(self, video_path, frames_dir, start_time, end_time):
+        """
+        Parallel frame extraction for better GPU utilization
+        Splits video into chunks and processes them simultaneously
+
+        Args:
+            video_path: Path to video file
+            frames_dir: Directory to store frames
+            start_time: Start time in seconds
+            end_time: End time in seconds
+
+        Returns:
+            List[str]: List of frame file paths
+        """
+        import concurrent.futures
+
+        duration = end_time - start_time
+        num_workers = min(self.parallel_workers, int(duration / 30))  # At least 30s per chunk
+        num_workers = max(1, num_workers)  # At least 1 worker
+
+        logger.info(f"Using parallel extraction with {num_workers} workers")
+
+        # Calculate chunk boundaries
+        chunk_duration = duration / num_workers
+        chunks = []
+        for i in range(num_workers):
+            chunk_start = start_time + (i * chunk_duration)
+            chunk_end = start_time + ((i + 1) * chunk_duration)
+            chunks.append((i, chunk_start, chunk_end))
+
+        # Extract chunks in parallel
+        ext = 'png' if self.output_format == 'png' else 'jpg'
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+            futures = []
+            for chunk_id, chunk_start, chunk_end in chunks:
+                # Each chunk uses a unique output pattern
+                chunk_pattern = str(frames_dir / f'chunk{chunk_id}_%08d.{ext}')
+                future = executor.submit(
+                    self._extract_chunk,
+                    video_path, chunk_pattern, chunk_start, chunk_end, chunk_id
+                )
+                futures.append(future)
+
+            # Wait for all chunks to complete
+            results = []
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    result = future.result()
+                    if result:
+                        results.extend(result)
+                except Exception as e:
+                    logger.error(f"Error in parallel chunk extraction: {e}")
+
+        # Rename files to sequential numbering
+        results.sort()  # Sort by filename
+        final_files = []
+        for idx, temp_file in enumerate(results, start=1):
+            temp_path = Path(temp_file)
+            final_name = f'frame{idx:08d}.{ext}'
+            final_path = frames_dir / final_name
+            temp_path.rename(final_path)
+            final_files.append(str(final_path))
+
+        return final_files
+
+    def _extract_chunk(self, video_path, output_pattern, start_time, end_time, chunk_id):
+        """
+        Extract a single chunk of frames
+
+        Args:
+            video_path: Path to video file
+            output_pattern: Output file pattern
+            start_time: Start time in seconds
+            end_time: End time in seconds
+            chunk_id: Chunk identifier
+
+        Returns:
+            List[str]: List of extracted frame paths
+        """
+        try:
             cmd = self._build_ffmpeg_command(video_path, output_pattern, start_time, end_time)
 
             result = subprocess.run(cmd, capture_output=True, text=True)
 
             if result.returncode != 0:
-                logger.error(f"FFmpeg extraction failed for {Path(video_path).name}")
-                logger.error(f"Error: {result.stderr[-1000:]}")  # Last 1000 chars
+                logger.error(f"FFmpeg chunk {chunk_id} extraction failed")
+                logger.error(f"Error: {result.stderr[-500:]}")
                 return []
 
-            # Get all extracted frames
-            frame_files = sorted(frames_dir.glob('frame*.jpg'))
-            logger.info(f"✓ Extracted {len(frame_files)} frames → {frames_dir}")
+            # Get extracted frames for this chunk
+            ext = 'png' if self.output_format == 'png' else 'jpg'
+            frames_dir = Path(output_pattern).parent
+            frame_files = sorted(frames_dir.glob(f'chunk{chunk_id}_*.{ext}'))
+
+            logger.debug(f"Chunk {chunk_id}: Extracted {len(frame_files)} frames")
 
             return [str(f) for f in frame_files]
 
         except Exception as e:
-            logger.error(f"Error extracting frames from {video_path}: {e}")
+            logger.error(f"Error extracting chunk {chunk_id}: {e}")
             return []
 
     def _build_ffmpeg_command(self, video_path, output_pattern, start_time, end_time):
@@ -287,11 +443,15 @@ class VideoService:
         # Video filter: scale to height, auto width, maintain aspect ratio
         vf_filters = []
 
+        # Add FPS filter first (if specified) to reduce frames before scaling
+        if self.fps:
+            vf_filters.append(f'fps={self.fps}')
+
         if self.gpu_scaling_available:
             # GPU-accelerated scaling (much faster for large videos)
             vf_filters.append(f'scale_cuda=-1:{self.frame_height}')  # GPU scaling
             vf_filters.append('hwdownload')                           # Transfer from GPU to CPU
-            vf_filters.append('format=yuv420p')                       # Standard pixel format
+            vf_filters.append('format=nv12')                          # CUDA-compatible pixel format
         else:
             # CPU scaling (works everywhere)
             vf_filters.append(f'scale=-1:{self.frame_height}')
@@ -299,13 +459,23 @@ class VideoService:
 
         cmd.extend(['-vf', ','.join(vf_filters)])
 
-        # Output settings: high quality JPEG
-        cmd.extend([
-            '-q:v', '2',       # Quality (2 is high, range 1-31, lower is better)
-            '-f', 'image2',    # Image output format
-            '-y',              # Overwrite files without asking
-            output_pattern
-        ])
+        # Output settings based on format
+        if self.output_format == 'png':
+            # PNG: Lossless but larger files, faster encoding
+            cmd.extend([
+                '-compression_level', '1',  # Fast compression (0-9, lower = faster)
+                '-f', 'image2',             # Image output format
+                '-y',                       # Overwrite files without asking
+                output_pattern
+            ])
+        else:
+            # JPEG: Lossy but smaller files, slower encoding
+            cmd.extend([
+                '-q:v', '2',       # Quality (2 is high, range 1-31, lower is better)
+                '-f', 'image2',    # Image output format
+                '-y',              # Overwrite files without asking
+                output_pattern
+            ])
 
         logger.debug(f"FFmpeg command: {' '.join(cmd)}")
         return cmd
@@ -369,6 +539,26 @@ class VideoService:
 
         return None
 
+    def get_duration_formatted(self, video_path):
+        """
+        Get video duration formatted as HH:MM:SS
+
+        Args:
+            video_path: Path to video file
+
+        Returns:
+            str: Duration formatted as HH:MM:SS, or None if failed
+        """
+        duration = self._get_video_duration(video_path)
+        if duration is None:
+            return None
+
+        hours = int(duration // 3600)
+        minutes = int((duration % 3600) // 60)
+        seconds = int(duration % 60)
+
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
     def is_minimum_duration(self, video_path, min_duration_minutes=20):
         """
         Check if video meets minimum duration requirement
@@ -411,3 +601,22 @@ class VideoService:
                 logger.warning(f"Failed to cleanup {folder_path}: {e}")
         else:
             logger.debug(f"No cleanup needed for {folder_name} (doesn't exist)")
+
+    def cleanup_job_frames(self, job_id):
+        """
+        Clean up extracted frames for a specific job
+
+        Args:
+            job_id: Job ID to clean up frames for
+        """
+        import shutil
+
+        frames_path = self.base_temp_dir / 'jobs' / job_id / 'frames'
+        if frames_path.exists():
+            try:
+                shutil.rmtree(frames_path)
+                logger.info(f"✓ Cleaned up job frames for: {job_id}")
+            except Exception as e:
+                logger.warning(f"Failed to cleanup job frames {frames_path}: {e}")
+        else:
+            logger.debug(f"No cleanup needed for job {job_id} (doesn't exist)")

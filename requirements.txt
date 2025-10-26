@@ -5,16 +5,12 @@ opencv-python-headless==4.8.1.78
 numpy==1.26.2
 scikit-image==0.22.0
 ImageHash==4.3.1
+psutil==5.9.6
 
-# Optional GPU acceleration dependencies
-# Install ONLY if you have an NVIDIA GPU with CUDA support
-# Uncomment the ones you want to use:
-
-# PyTorch with CUDA (recommended for NVIDIA GPUs)
-# Install with: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# GPU acceleration with PyTorch
+# NOTE: PyTorch with CUDA is installed automatically in the Docker container
+# If running locally, install with:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+#
 # torch>=2.0.0
 # torchvision>=0.15.0
-
-# CuPy (alternative to PyTorch, lighter weight)
-# Install with: pip install cupy-cuda11x (replace 11x with your CUDA version)
-# cupy-cuda11x>=12.0.0
